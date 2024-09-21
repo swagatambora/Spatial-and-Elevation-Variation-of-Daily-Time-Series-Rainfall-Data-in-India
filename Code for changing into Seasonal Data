@@ -1,0 +1,39 @@
+make_seasonal_data <- function(input_file, output_dir) {
+  # Read the input file
+  data <- read.csv(input_file)
+  
+  # Convert the 'Date' column to Date type
+  data$DateTime <- as.Date(data$Date)
+  
+  # Define seasons based on months
+  seasons <- list(
+    Monsoon = c(6, 7, 8, 9),
+    `Post-Monsoon` = c(10, 11),
+    Winter = c(12, 1, 2),
+    `Pre-Monsoon` = c(3, 4, 5)
+  )
+  
+  # Iterate over each season
+  for (season_name in names(seasons)) {
+    # Filter data for the current season
+    season_months <- seasons[[season_name]]
+    seasonal_data <- data[format(data$DateTime, "%m") %in% sprintf("%02d", season_months), ]
+    
+    # Generate filename for the current season
+    output_file <- paste(output_dir, "/", tools::file_path_sans_ext(basename(input_file)), "_", season_name, ".csv", sep="")
+    
+    # Remove 'Date' and 'DateTime' columns
+    seasonal_data <- seasonal_data[, !(names(seasonal_data) %in% c("Date", "DateTime"))]
+    
+    # Write seasonal data to CSV
+    write.csv(seasonal_data, file=output_file, row.names=FALSE)
+  }
+}
+
+A<-"D:/Analyse"
+dir1<-list.files(pattern="\\.csv$")
+outp1<-"C:/Users/ROG/Desktop/StatsTermP/SeasonalVal2"
+
+for (inputs in dir1) {
+  make_seasonal_data(inputs, outp1)
+}
