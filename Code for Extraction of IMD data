@@ -1,0 +1,30 @@
+df=pd.read_csv("C:\Users\ROG\Desktop\StatsTermP\imdpre1901_2021.csv").T
+
+## Read NaN values
+df=df.dropna(axis=0)
+
+## Remove the zero rows in the data
+df=df[(df.T!= 0).any()]
+
+# Lat and lon Values Extraction
+lat=[];lon=[]
+for i in range(0,len(df.index)):
+lat.append(float(df.index[i].split("X")[1]))
+lon.append(float(df.index[i].split("X")[2]))
+###########################################################################
+
+lat_lon=pd.DataFrame([lat,lon]).T
+lat_lon.columns=['lat','lon']
+#lat_lon.to_csv("/home/anusha/Desktop/CE6670/lat_lon.csv")
+
+df.columns=pd.date_range("1901-01-01",periods=len(df.columns),freq='D')
+grids=df
+
+grids.index=np.arange(0, grids.shape[0])
+
+# Fill Null Values with Zeros
+grids=grids.fillna(0)
+
+
+# Only values from 1951
+grids=grids.T[grids.T.index.year>=1951].T
