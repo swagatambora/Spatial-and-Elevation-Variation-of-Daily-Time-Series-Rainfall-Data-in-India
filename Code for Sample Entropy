@@ -1,0 +1,21 @@
+# Matlab code for extracting Sampe Entropy
+csvFiles = dir('C:\Users\ROG\Desktop\StatsTermP\Stats\*.csv');
+numFiles = numel(csvFiles);
+results = cell(numFiles, 2);
+for i = 1:numFiles
+
+    filename = fullfile(csvFiles(i).folder, csvFiles(i).name);
+    data = readtable(filename);
+    
+    % Extract location name from filename or data
+    [~, baseFileName, ~] = fileparts(filename);
+    locationName = baseFileName; 
+     coordinates = data{:, 2};
+     coordinates = coordinates(:);
+    
+    sampleEntropy = sampen(coordinates,2,0.2);
+    
+    % Store results
+    results{i, 1} = locationName;
+    results{i, 2} = sampleEntropy;
+end
